@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF‑8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Passenger Page – Party Bus &amp; Limo Tracker</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+      integrity="sha256‑sA+e2mEtjL3/Tw1g7nCD9iVH0H1JauNmtc5r11JtSNY="
+      crossorigin=""
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512‑VLgUS9Km+1H3bbYjC4CH9FmoNRkB7B6zgjE6DQy4gnlMH9UX2nmOGcKX67XuZ06xxHSqiu0PVKXA0+SP3T3oA=="
+      crossorigin="anonymous"
+      referrerpolicy="no‑referrer"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      /* Passenger page specific styles */
+      .app‑header {
+        background: var(--primary-color);
+        color: var(--text-color);
+        padding: 1rem;
+        text-align: center;
+      }
+      #map {
+        height: 50vh;
+        width: 100%;
+        border-radius: var(--border-radius);
+        margin-bottom: 1rem;
+      }
+      .info {
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background-color: var(--secondary-color);
+        border-radius: var(--border-radius);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+      .info h3 {
+        margin-bottom: 0.5rem;
+      }
+      .info p {
+        margin-bottom: 0.5rem;
+      }
+      .destination‑form label {
+        display: block;
+        margin-top: 0.5rem;
+        margin-bottom: 0.25rem;
+        font-weight: 600;
+      }
+      .destination‑form input,
+      .destination‑form textarea {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #374151;
+        border-radius: var(--border-radius);
+        background-color: var(--primary-color);
+        color: var(--text-color);
+      }
+      .destination‑form button,
+      .special‑buttons button {
+        margin-top: 0.75rem;
+        padding: 0.5rem;
+        width: 100%;
+        border: none;
+        border-radius: var(--border-radius);
+        background-color: var(--accent-color);
+        color: var(--text-color);
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .special‑buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app‑header">
+      <h1>Passenger Page</h1>
+      <p>Request new destinations or stops for your ride</p>
+    </div>
+    <main style="padding: 1rem; max-width: 800px; margin: 0 auto;">
+      <div id="map"></div>
+      <div class="info">
+        <h3>Request a New Destination</h3>
+        <form id="newDestinationForm" class="destination‑form">
+          <label for="driverCodeInput">Driver Code</label>
+          <input type="password" id="driverCodeInput" pattern="\d{4}" maxlength="4" placeholder="4-digit code" required />
+          <label for="addressInput">Address or place name</label>
+          <input type="text" id="addressInput" placeholder="e.g. 123 Main St or The Grand Hotel" required />
+          <label for="newNote">Note (optional)</label>
+          <textarea id="newNote" rows="2" placeholder="e.g. next club stop"></textarea>
+          <button type="submit">Send New Destination</button>
+        </form>
+      </div>
+      <div class="info">
+        <h3>Special Requests</h3>
+        <div class="special‑buttons">
+          <button id="restroomBtn">Restroom Break</button>
+          <button id="stopBtn">Request Stop</button>
+        </div>
+      </div>
+    </main>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256‑p8BBTeiMwks74nTskkwdUdG0sCwKwRHBvnyq4dthkPk=" crossorigin=""></script>
+    <script src="passenger.js"></script>
+  </body>
+</html>
