@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF‑8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Driver App – Party Bus &amp; Limo Tracker</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+      integrity="sha256‑sA+e2mEtjL3/Tw1g7nCD9iVH0H1JauNmtc5r11JtSNY="
+      crossorigin=""
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512‑VLgUS9Km+1H3bbYjC4CH9FmoNRkB7B6zgjE6DQy4gnlMH9UX2nmOGcKX67XuZ06xxHSqiu0PVKXA0+SP3T3oA=="
+      crossorigin="anonymous"
+      referrerpolicy="no‑referrer"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      /* Additional driver page styles */
+      .app‑header {
+        background: var(--primary-color);
+        color: var(--text-color);
+        padding: 1rem;
+        text-align: center;
+      }
+      #map {
+        height: 50vh;
+        width: 100%;
+        border-radius: var(--border-radius);
+        margin-bottom: 1rem;
+      }
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+      .controls button {
+        flex: 1;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        color: var(--text-color);
+        background-color: var(--accent-color);
+        cursor: pointer;
+      }
+      .controls button.stop {
+        background-color: #b91c1c;
+        color: var(--text-color);
+      }
+      .controls button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .share {
+        margin-bottom: 1rem;
+      }
+      .share input[type="text"] {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #d1d5db;
+        border-radius: var(--border-radius);
+        margin-top: 0.25rem;
+      }
+      .share .btns {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+      .share button {
+        flex: 1;
+        padding: 0.5rem;
+        border: none;
+        border-radius: var(--border-radius);
+        color: var(--text-color);
+        background-color: var(--accent-color);
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .route‑info {
+        margin-top: 1rem;
+        padding: 1rem;
+        background-color: white;
+        border-radius: var(--border-radius);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+      .route‑info h3 {
+        margin-bottom: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Authentication and driver app containers -->
+    <div id="authContainer" style="padding: 1rem; max-width: 600px; margin: 0 auto; display: none;">
+      <h1 style="text-align:center; margin-bottom:0.5rem;">Driver Login</h1>
+      <p style="text-align:center; margin-bottom:1rem;">Create an account or log in to start your trip</p>
+      <div class="auth-forms" style="display:flex; flex-direction:column; gap:1rem;">
+        <!-- Sign Up Form -->
+        <form id="signUpForm" style="background: var(--secondary-color); padding:1rem; border-radius: var(--border-radius);">
+          <h2 style="margin-bottom:0.5rem;">Create Account</h2>
+          <label for="signUpFirst">First Name</label>
+          <input type="text" id="signUpFirst" required placeholder="First Name" />
+          <label for="signUpLast">Last Name</label>
+          <input type="text" id="signUpLast" required placeholder="Last Name" />
+          <label for="signUpPass">4-digit Passcode</label>
+          <input type="password" id="signUpPass" pattern="\d{4}" maxlength="4" required placeholder="e.g. 1234" />
+          <button type="submit" style="margin-top:0.75rem; width:100%; background-color: var(--accent-color); color: var(--text-color); border:none; padding:0.5rem; border-radius: var(--border-radius); font-weight:600; cursor:pointer;">Create Account</button>
+        </form>
+        <!-- Login Form -->
+        <form id="loginForm" style="background: var(--secondary-color); padding:1rem; border-radius: var(--border-radius);">
+          <h2 style="margin-bottom:0.5rem;">Log In</h2>
+          <label for="loginPass">Passcode</label>
+          <input type="password" id="loginPass" pattern="\d{4}" maxlength="4" required placeholder="Enter your 4-digit code" />
+          <button type="submit" style="margin-top:0.75rem; width:100%; background-color: var(--accent-color); color: var(--text-color); border:none; padding:0.5rem; border-radius: var(--border-radius); font-weight:600; cursor:pointer;">Login</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="appContainer" style="display:none;">
+      <div class="app‑header">
+        <h1>Driver App</h1>
+        <p id="driverWelcome">Track your party bus or limo in real time</p>
+      </div>
+      <main style="padding: 1rem; max-width: 800px; margin: 0 auto;">
+        <div id="map"></div>
+        <div class="controls">
+          <button id="startBtn">Start Trip</button>
+          <button id="stopBtn" class="stop" disabled>Stop Trip</button>
+        </div>
+        <div class="share">
+          <label for="linkInput">Shareable link:</label>
+          <input type="text" id="linkInput" readonly placeholder="Generate a link" />
+          <!-- Field to capture passenger phone number for SMS notifications -->
+          <label for="phoneInput" style="margin-top:0.5rem;">Passenger phone # (SMS):</label>
+          <input type="tel" id="phoneInput" placeholder="e.g. +15551234567" pattern="\+?\d{10,15}" />
+          <div class="btns">
+            <button id="generateLinkBtn">Generate Link</button>
+            <button id="copyLinkBtn" disabled>Copy</button>
+          </div>
+        </div>
+        <div class="route‑info">
+          <h3>Current Destination</h3>
+          <p id="destinationDisplay">None</p>
+        </div>
+      </main>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256‑p8BBTeiMwks74nTskkwdUdG0sCwKwRHBvnyq4dthkPk=" crossorigin=""></script>
+    <script src="driver.js"></script>
+  </body>
+</html>

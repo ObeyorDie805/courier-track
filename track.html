@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF‑8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tracking Page – Party Bus &amp; Limo Tracker</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+      integrity="sha256‑sA+e2mEtjL3/Tw1g7nCD9iVH0H1JauNmtc5r11JtSNY="
+      crossorigin=""
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512‑VLgUS9Km+1H3bbYjC4CH9FmoNRkB7B6zgjE6DQy4gnlMH9UX2nmOGcKX67XuZ06xxHSqiu0PVKXA0+SP3T3oA=="
+      crossorigin="anonymous"
+      referrerpolicy="no‑referrer"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      /* Additional styles for the tracking page */
+      .app‑header {
+        background: var(--primary-color);
+        color: var(--text-color);
+        padding: 1rem;
+        text-align: center;
+      }
+      #map {
+        height: 50vh;
+        width: 100%;
+        border-radius: var(--border-radius);
+        margin-bottom: 1rem;
+      }
+      .info {
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background-color: white;
+        border-radius: var(--border-radius);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+      .info h3 {
+        margin-bottom: 0.5rem;
+      }
+      .info p {
+        margin-bottom: 0.5rem;
+      }
+      .destination‑form label {
+        display: block;
+        margin-top: 0.5rem;
+        margin-bottom: 0.25rem;
+        font-weight: 600;
+      }
+      .destination‑form input,
+      .destination‑form textarea {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #d1d5db;
+        border-radius: var(--border-radius);
+      }
+      .destination‑form button {
+        margin-top: 0.75rem;
+        padding: 0.5rem;
+        width: 100%;
+        border: none;
+        border-radius: var(--border-radius);
+        background-color: var(--accent-color);
+        color: var(--text-color);
+        font-weight: 600;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app‑header">
+      <h1>Tracking Page</h1>
+      <p>Follow your luxury ride in real time</p>
+    </div>
+    <main style="padding: 1rem; max-width: 800px; margin: 0 auto;">
+      <div id="map"></div>
+      <div class="info">
+        <h3>Driver Location</h3>
+        <p id="driverCoords">Waiting for updates…</p>
+      </div>
+      <div class="info">
+        <h3>Update Destination</h3>
+        <form id="destinationForm" class="destination‑form">
+          <label for="latInput">Latitude</label>
+          <input type="number" step="any" id="latInput" required />
+          <label for="lngInput">Longitude</label>
+          <input type="number" step="any" id="lngInput" required />
+          <label for="noteInput">Note (optional)</label>
+          <textarea id="noteInput" rows="2" placeholder="e.g. front door drop‑off"></textarea>
+          <button type="submit">Send to Driver</button>
+        </form>
+      </div>
+    </main>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256‑p8BBTeiMwks74nTskkwdUdG0sCwKwRHBvnyq4dthkPk=" crossorigin=""></script>
+    <script src="track.js"></script>
+  </body>
+</html>
